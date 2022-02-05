@@ -1,0 +1,96 @@
+#lang sicp
+(#%require sicp-pict)
+
+; exercise 2.44
+(define (up-split painter n)
+  (if (= n 0)
+      painter
+      (let ((smaller (up-split painter (- n 1))))
+        (below painter (beside smaller smaller)))))
+
+; exercise 2.45
+; NOTE: jak vratit rekurzivni lambdu? Nejde to lip nez takhle?
+(define (split op1 op2)
+  (define (tmp painter n)
+    (if (= n 0)
+        painter
+        (let ((smaller (tmp painter (- n 1))))
+          (op1 painter (op2 smaller smaller)))))
+  tmp)
+;  (lambda (painter n) (tmp painter n)))
+
+; exercise 2.46
+;(define make-vect cons)
+;(define xcor-vect car)
+;(define ycor-vect cdr)
+
+;(define (add-vect u v)
+;  (define (sum-coors u v sel)
+;    (+ (sel u) (sel v)))
+;  (make-vect (sum-coors u v xcor-vect)
+;             (sum-coors u v ycor-vect)))
+
+;(define (scale-vect s v)
+;  (make-vect (* s (xcor-vect v))
+;             (* s (ycor-vect v))))
+
+;(define (sub-vect u v)
+;  (add-vect u (scale-vect -1 v)))
+
+; exercise 2.47
+(define (make-frame origin edge1 edge2)
+  (list origin edge1 edge2))
+ 
+(define origin-frame car)
+(define edge1-frame cadr)
+(define (edge2-frame frame)
+  (cadr (cdr frame)))
+
+
+; exercise 2.48
+;(define (make-segment u v)
+;  (cons u (add-vect u v)))
+;(define start-segment car)
+;(define end-segment cdr)
+
+; exercise 2.49
+; a
+(define outline-painter
+  (let ((bl (make-vect 0 0))
+        (br (make-vect 1 0))
+        (tr (make-vect 1 1))
+        (tl (make-vect 0 1)))
+    (segments->painter
+      (list (make-segment bl br)
+            (make-segment br tr)
+            (make-segment tr tl)
+            (make-segment tl bl)))))
+; b
+(define x-painter
+  (let ((bl (make-vect 0 0))
+        (br (make-vect 1 0))
+        (tr (make-vect 1 1))
+        (tl (make-vect 0 1)))
+    (segments->painter
+      (list (make-segment bl tr)
+            (make-segment tl br)))))
+
+; c
+(define diamond-painter
+  (let ((bl (make-vect 0.0 0.5))
+        (br (make-vect 0.5 0.0))
+        (tr (make-vect 1.0 0.5))
+        (tl (make-vect 0.5 1.0)))
+    (segments->painter
+      (list (make-segment bl br)
+            (make-segment br tr)
+            (make-segment tr tl)
+            (make-segment tl bl)))))
+
+
+; Transforming and combining painters
+(define (shrink-to-upper-right painter)
+  (transform-painter painter
+                     (make-vect 0.5 0.5)
+                     (make-vect 1.0 0.5)
+                     (make-vect 0.5 1.0)))
