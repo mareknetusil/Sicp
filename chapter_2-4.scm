@@ -272,4 +272,38 @@
   'done)
 
 ; exercise 2.74
+; OKECAT!
+
+
+; Message passing
+; ---------------
+(define (make-from-real-imag x y)
+  (define (dispatch op)
+    ((eq? op 'real-part) x)
+    ((eq? op 'imag-part) y)
+    ((eq? op 'magnitude) (sqrt (+ (square x) (square y))))
+    ((eq? op 'angle) (atan y x))
+    (else (error "Unknown op: MAKE-FROM-REAL-IMAG" op)))
+  dispatch)
+
+(define (apply-generic op arg) (arg op))
+
+; exercise 2.75
+(define (make-from-mag-ang r a)
+  (define (dispatch op)
+    ((eq? op 'real-part) (* r (cos a)))
+    ((eq? op 'imag-part) (* r (sin a)))
+    ((eq? op 'magnitude) r)
+    ((eq? op 'angle) a)
+    (else (error "Unknown op: MAKE-FROM-MAG-ANG" op)))
+  dispatch)
+
+; exercise 2.76
+; explicit dispatch - na hovno ve vsech pripadech
+; data directed - lze snadno pridavat operace bez zmeny stavajicich dat,
+;   musi se ale vzdy pridat do tabulky, tj. vice nez jeden install muze byt potreba
+;   pro pouziti novych typu se musi metody pridat do tabulky
+; message passing - pro nove operace se musi sahnout do stavajiciho kodu,
+;   pro pridani novych typu neni potreba zadna prace navic
+; NOTE: metody je samozrejme mozny i kombinovat
 
